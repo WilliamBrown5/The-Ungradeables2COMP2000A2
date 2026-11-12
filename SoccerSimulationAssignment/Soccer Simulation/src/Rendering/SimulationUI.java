@@ -548,7 +548,7 @@ class SimWindow extends Menus {
 }
 
 /*
-  * pause and resume menu
+  * DONE
   */
 class SimWindowMenu extends Menus {
     SimWindowMenu(UIWindow window) {
