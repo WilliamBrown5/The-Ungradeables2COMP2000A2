@@ -54,7 +54,7 @@ public class TimerPanel extends JPanel {
     }
 
     public void resumeTimer() {
-        if (matchTimer.getSeconds() > 0) {
+        if (!timer.isRunning() && matchTimer.getSeconds() > 0) {
             timer.start();
         }
     }

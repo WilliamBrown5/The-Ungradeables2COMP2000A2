@@ -82,7 +82,8 @@ class UIWindow {
     }
 
     void changeState(MenuState nexState) {
-        if(currentState != null) currentState.onExit();
+        if (currentState != null)
+            currentState.onExit();
         currentState = nexState;
         frame.setContentPane(nexState);
         frame.revalidate();
@@ -145,13 +146,8 @@ class UIWindow {
         }
     }
 
-
-
 }
 
-/*
-  * DONE
-  */
 abstract class MenuState extends JPanel {
     protected UIWindow window;
 
@@ -159,16 +155,17 @@ abstract class MenuState extends JPanel {
         this.window = window;
     }
 
-    abstract void onEnter();
+    void onEnter() {
+    }
 
-    abstract void onExit();
+    void onExit() {
+    }
 
     abstract void back();
 }
 
-/*
-  * DONE
-  */
+
+
 class MainMenu extends MenuState {
     MainMenu(UIWindow window) {
         super(window);
@@ -176,10 +173,10 @@ class MainMenu extends MenuState {
         window.pitch.setBounds(0, 0, ScreenSize.width, ScreenSize.height);
 
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> next1());
+        startButton.addActionListener(e -> openStartMenu());
 
         JButton settingsButton = new JButton("Settings");
-        settingsButton.addActionListener(e -> next2());
+        settingsButton.addActionListener(e -> openSettingsMenu());
 
         JButton exitButton = new JButton("Exit");
         exitButton.addActionListener(e -> back());
@@ -198,16 +195,13 @@ class MainMenu extends MenuState {
         add(window.pitch);
     }
 
-    @Override
-    void next1() {
-        window.setMenu(new StartMenu(window));
+    void openStartMenu() {
+        window.changeState(new StartMenu(window));
     }
 
-    @Override
-    void next2() {
-        window.setMenu(new SettingsMenu(window));
+    void openSettingsMenu() {
+        window.changeState(new SettingsMenu(window));
     }
-
 
     @Override
     void back() {
@@ -216,9 +210,7 @@ class MainMenu extends MenuState {
 
 }
 
-/*
-  * DONE
-  */
+
 class StartMenu extends MenuState {
     StartMenu(UIWindow window) {
         super(window);
@@ -226,13 +218,13 @@ class StartMenu extends MenuState {
         window.vertPitch.setBounds(0, 0, ScreenSize.width, ScreenSize.height);
 
         JButton startButton = new JButton("Start");
-        startButton.addActionListener(e -> next1());
+        startButton.addActionListener(e -> startSim());
 
         JButton formationButton = new JButton("Formation Settings");
-        formationButton.addActionListener(e -> next2());
+        formationButton.addActionListener(e -> openFormationSettingsMenu());
 
         JButton matchSettingsButton = new JButton("Match Settings");
-        matchSettingsButton.addActionListener(e -> next3());
+        matchSettingsButton.addActionListener(e -> openMatchSettingsMenu());
 
         JButton exitButton = new JButton("Back");
         exitButton.addActionListener(e -> back());
@@ -256,32 +248,29 @@ class StartMenu extends MenuState {
 
     }
 
-    @Override
-    void next1() {
-        window.setMenu(new SimWindow(window));
+    void startSim() {
+        window.changeState(new SimWindow(window));
     }
 
-    @Override
-    void next2() {
-        window.setMenu(new FormationMenu(window));
+    void openFormationSettingsMenu() {
+        window.changeState(new FormationMenu(window));
     }
 
-    @Override
-    void next3() {
-        window.setMenu(new MatchSettingsMenu(window));
+    void openMatchSettingsMenu() {
+        window.changeState(new MatchSettingsMenu(window));
     }
 
     @Override
     void back() {
-        window.setMenu(new MainMenu(window));
+        window.changeState(new MainMenu(window));
     }
 
 }
 
 /*
-  * NEEDS, to have the debug output make a pop-up window that prints the log of
-  * everything that happens
-  */
+ * NEEDS, to have the debug output make a pop-up window that prints the log of
+ * everything that happens
+ */
 class SettingsMenu extends MenuState {
     SettingsMenu(UIWindow window) {
         super(window);
@@ -305,29 +294,14 @@ class SettingsMenu extends MenuState {
         add(exitButton);
     }
 
-    @Override
-    void next1() {
-    }
-
-    @Override
-    void next2() {
-
-    }
-
-    @Override
-    void next3() {
-
-    }
 
     @Override
     void back() {
-        window.setMenu(new MainMenu(window));
+        window.changeState(new MainMenu(window));
     }
 }
 
-/*
-  * DONE
-  */
+
 class FormationMenu extends MenuState {
     CircleList<String> formationCircle;
     CircleList<String> sidesCircle;
@@ -411,29 +385,14 @@ class FormationMenu extends MenuState {
         window.vertPitch.drawPlayers(window);
     }
 
-    @Override
-    void next1() {
-    }
-
-    @Override
-    void next2() {
-
-    }
-
-    @Override
-    void next3() {
-
-    }
 
     @Override
     void back() {
-        window.setMenu(new StartMenu(window));
+        window.changeState(new StartMenu(window));
     }
 }
 
-/*
-  * DONE
-  */
+
 class MatchSettingsMenu extends MenuState {
     MatchSettingsMenu(UIWindow window) {
         super(window);
@@ -451,42 +410,25 @@ class MatchSettingsMenu extends MenuState {
         add(exitButton);
     }
 
-    @Override
-    void next1() {
-        // empty for the time being
-    }
-
-    @Override
-    void next2() {
-        // empty for the time being
-
-    }
-
-    @Override
-    void next3() {
-        // empty for the time being
-    }
 
     @Override
     void back() {
-        window.setMenu(new StartMenu(window));
+        window.changeState(new StartMenu(window));
     }
 }
 
-/*
-  * running match display
-  */
+
 class SimWindow extends MenuState {
     Match match;
+    private TimerPanel timerPanel;
+
     SimWindow(UIWindow window) {
         super(window);
         setLayout(null);
 
         match = new Match();
         window.activeSimulation = this;
-
         match.setupAndStartSimulation(window.homeFormationCircle.getCurrent(), window.awayFormationCircle.getCurrent());
-
 
         JButton menuButton = new JButton("Menu");
         menuButton.addActionListener(e -> back());
@@ -497,7 +439,7 @@ class SimWindow extends MenuState {
 
         menuButton.setBounds(ScreenSize.width / 5 - 125, ScreenSize.height - 385, 80, 40);
 
-        TimerPanel timerPanel = new TimerPanel(match);
+        timerPanel = new TimerPanel(match);
         timerPanel.setBounds(ScreenSize.width / 2 - 75, 20, 150, 40);
 
         match.pitch.setBounds(0, 0, ScreenSize.width, ScreenSize.height);
@@ -509,51 +451,45 @@ class SimWindow extends MenuState {
 
     // Overlapping children (the full-screen pitch sits behind the timer/menu)
     // need this override, otherwise Swing assumes nothing overlaps and skips
-    // repainting the timer label whenever the pitch redraws underneath it —
+    // repainting the timer label whenever the pitch redraws underneath it,
     // that's what was causing the timer to blink in and out.
     @Override
     public boolean isOptimizedDrawingEnabled() {
         return false;
     }
 
-    @Override
-    void next1() {
-        // empty for the time being
+    @Override 
+    void onEnter(){
+        match.resumeSimulation();
+        timerPanel.resumeTimer();
     }
 
-    @Override
-    void next2() {
-        // empty for the time being
-
+    @Override 
+    void onExit(){
+        match.pauseSimulation();
+        timerPanel.pauseTimer();
     }
 
-    @Override
-    void next3() {
-        // empty for the time being
+    void stop(){
+        match.stopSimulation();
+        timerPanel.stopTimer();
     }
+
 
     @Override
     void back() {
-        match.pauseSimulation();
-        for (Component component : getComponents()) {
-            if (component instanceof TimerPanel) {
-                ((TimerPanel) component).pauseTimer();
-            }
-        }
-        window.setMenu(new SimWindowMenu(window));
+        window.changeState(new SimWindowMenu(window));
     }
 }
 
-/*
-  * DONE
-  */
+
 class SimWindowMenu extends MenuState {
     SimWindowMenu(UIWindow window) {
         super(window);
         setLayout(null);
 
         JButton resumeButton = new JButton("Resume");
-        resumeButton.addActionListener(e -> next1());
+        resumeButton.addActionListener(e -> resume());
 
         JButton exitButton = new JButton("Exit");
         exitButton.addActionListener(e -> back());
@@ -569,49 +505,24 @@ class SimWindowMenu extends MenuState {
         add(exitButton);
     }
 
-    @Override
-    void next1() {
-        SimWindow simulation = window.activeSimulation;
-        if (simulation != null) {
-            simulation.match.resumeSimulation();
-            for (Component component : simulation.getComponents()) {
-                if (component instanceof TimerPanel) {
-                    ((TimerPanel) component).resumeTimer();
-                }
-            }
-            window.setMenu(simulation);
+    void resume() {
+        if (window.activeSimulation != null) {
+            window.changeState(window.activeSimulation);
         }
     }
 
-    @Override
-    void next2() {
-        // empty for the time being
-
-    }
-
-    @Override
-    void next3() {
-        // empty for the time being
-    }
 
     @Override
     void back() {
         if (window.activeSimulation != null) {
-            window.activeSimulation.match.stopSimulation();
-            for (Component component : window.activeSimulation.getComponents()) {
-                if (component instanceof TimerPanel) {
-                    ((TimerPanel) component).stopTimer();
-                }
-            }
+            window.activeSimulation.stop();
             window.activeSimulation = null;
         }
-        window.setMenu(new StartMenu(window));
+        window.changeState(new StartMenu(window));
     }
 }
 
-/*
-  * DONE
-  */
+
 class CircleNode<T> {
     T value;
     CircleNode<T> next;
@@ -623,8 +534,8 @@ class CircleNode<T> {
 }
 
 /*
-  * DONE
-  */
+ * DONE
+ */
 class CircleList<T> {
     private CircleNode<T> current;
 
@@ -782,7 +693,8 @@ class VerticalPitch extends JPanel {
 
         // keep each team's formation when switching sides
         window.formationCircle = window.sidesCircle.getCurrent().equals("Home")
-                ? window.homeFormationCircle : window.awayFormationCircle;
+                ? window.homeFormationCircle
+                : window.awayFormationCircle;
 
     }
 
