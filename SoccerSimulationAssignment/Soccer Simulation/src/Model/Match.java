@@ -26,7 +26,7 @@ public class Match {
     private ArrayList<Actor> gameActors;
     private ArrayList<Player> players;
     private final PlayerMovementStrategy chaseStrategy = new ChaseStrategy();
-    private final PlayerMovementStrategy formationStrategy = new FormationStrategy();
+    private final PlayerMovementStrategy formationStrategy = new HoldFormationStrategy();
     private volatile boolean isRunning;
     private volatile boolean isPaused;
     private Thread simulationThread;
@@ -129,63 +129,21 @@ public class Match {
     }
 
     // specific grid patterns depending on chosen config
-    private void generateTeamFormation(String formationType, Color teamColor, boolean isHomeTeam) {
+    private void generateTeamFormation(TeamFormation formation, Color teamColor, boolean isHomeTeam) {
         int centerY = ScreenSize.height / 2;
         int directionX = isHomeTeam ? 1 : -1;
         int baseLineX = isHomeTeam ? 80 : ScreenSize.width - 80;
 
-        // main structural nodes depending on selected configuration parameters
-        int defX = baseLineX + (120 * directionX);
-        int midX = baseLineX + (280 * directionX);
-        int fwdX = baseLineX + (420 * directionX);
 
         String prefix = isHomeTeam ? "Home_" : "Away_";
 
         // Always spawn Goalkeeper at base line
         players.add(new Player(prefix + "GK", baseLineX, centerY, teamColor, true));
 
-        if ("4-3-3".equals(formationType)) {
-            // 4 Defenders
-            players.add(new Player(prefix + "DF1", defX, centerY - 150, teamColor));
-            players.add(new Player(prefix + "DF2", defX, centerY - 50, teamColor));
-            players.add(new Player(prefix + "DF3", defX, centerY + 50, teamColor));
-            players.add(new Player(prefix + "DF4", defX, centerY + 150, teamColor));
-            // 3 Midfielders
-            players.add(new Player(prefix + "MF1", midX, centerY - 100, teamColor));
-            players.add(new Player(prefix + "MF2", midX, centerY, teamColor));
-            players.add(new Player(prefix + "MF3", midX, centerY + 100, teamColor));
-            // 3 Forwards
-            players.add(new Player(prefix + "FW1", fwdX, centerY - 120, teamColor));
-            players.add(new Player(prefix + "FW2", fwdX, centerY, teamColor));
-            players.add(new Player(prefix + "FW3", fwdX, centerY + 120, teamColor));
-        } else if ("3-5-2".equals(formationType)) {
-            // 3 Defenders
-            players.add(new Player(prefix + "DF1", defX, centerY - 120, teamColor));
-            players.add(new Player(prefix + "DF2", defX, centerY, teamColor));
-            players.add(new Player(prefix + "DF3", defX, centerY + 120, teamColor));
-            // 5 Midfielders
-            players.add(new Player(prefix + "MF1", midX, centerY - 160, teamColor));
-            players.add(new Player(prefix + "MF2", midX, centerY - 80, teamColor));
-            players.add(new Player(prefix + "MF3", midX, centerY, teamColor));
-            players.add(new Player(prefix + "MF4", midX, centerY + 80, teamColor));
-            players.add(new Player(prefix + "MF5", midX, centerY + 160, teamColor));
-            // 2 Forwards
-            players.add(new Player(prefix + "FW1", fwdX, centerY - 60, teamColor));
-            players.add(new Player(prefix + "FW2", fwdX, centerY + 60, teamColor));
-        } else { // fallback standard "4-4-2"
-            // 4 Defenders
-            players.add(new Player(prefix + "DF1", defX, centerY - 150, teamColor));
-            players.add(new Player(prefix + "DF2", defX, centerY - 50, teamColor));
-            players.add(new Player(prefix + "DF3", defX, centerY + 50, teamColor));
-            players.add(new Player(prefix + "DF4", defX, centerY + 150, teamColor));
-            // 4 Midfielders
-            players.add(new Player(prefix + "MF1", midX, centerY - 150, teamColor));
-            players.add(new Player(prefix + "MF2", midX, centerY - 50, teamColor));
-            players.add(new Player(prefix + "MF3", midX, centerY + 50, teamColor));
-            players.add(new Player(prefix + "MF4", midX, centerY + 150, teamColor));
-            // 2 Forwards
-            players.add(new Player(prefix + "FW1", fwdX, centerY - 60, teamColor));
-            players.add(new Player(prefix + "FW2", fwdX, centerY + 60, teamColor));
+        int n = 2;
+        for(int[] pos : formation.getPositions()){
+            players.add(new Player(prefix + n++, baseLineX + directionX * pos[0],  centerY + pos[1], teamColor))
+        
         }
     }
 

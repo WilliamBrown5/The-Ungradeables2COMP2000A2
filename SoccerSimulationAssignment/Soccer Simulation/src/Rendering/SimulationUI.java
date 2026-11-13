@@ -33,6 +33,7 @@ class UIWindow {
         frame.setSize(ScreenSize.width, ScreenSize.height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
         homeFormationCircle = new CircleList<>(new String[] { "4-4-2", "4-3-3", "3-5-2" });
         awayFormationCircle = new CircleList<>(new String[] { "4-4-2", "4-3-3", "3-5-2" });
         formationCircle = homeFormationCircle;
