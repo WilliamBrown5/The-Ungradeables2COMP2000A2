@@ -68,7 +68,7 @@ public class Player implements Actor {
         g.setColor(colour);
         g.fillOval(x - 9, y - 9, 18, 18);
         g.setColor(Color.white);
-        g.setFont(new Font("Arial", Font.BOLD, 10));
+        g.setFont(new Font("Lexend", Font.BOLD, 10));
         String number = String.valueOf(jerseyNumber);
         FontMetrics metrics = g.getFontMetrics();
         int textX = x - metrics.stringWidth(number) / 2;

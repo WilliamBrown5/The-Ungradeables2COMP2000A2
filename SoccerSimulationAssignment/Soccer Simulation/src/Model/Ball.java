@@ -38,7 +38,6 @@ public class Ball implements Actor {
         this.owner = null;
         this.velocityX = speedX;
         this.velocityY = speedY;
-        //week 13
     }
 
     public void update() {

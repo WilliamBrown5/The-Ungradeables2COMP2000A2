@@ -113,7 +113,7 @@ public class SoccerPitch extends JPanel {
 
         // Scoreboard
         g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 22));
+        g.setFont(new Font("Lexend", Font.BOLD, 22));
         String scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
         FontMetrics scoreMetrics = g.getFontMetrics();
         int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
@@ -121,7 +121,7 @@ public class SoccerPitch extends JPanel {
 
         // Temporary goal message or final full-time result
         if (!message.isEmpty()) {
-            g.setFont(new Font("Arial", Font.BOLD, 28));
+            g.setFont(new Font("Lexend", Font.BOLD, 28));
             FontMetrics messageMetrics = g.getFontMetrics();
             int messageWidth = messageMetrics.stringWidth(message);
             int messageX = (ScreenSize.width - messageWidth) / 2;
