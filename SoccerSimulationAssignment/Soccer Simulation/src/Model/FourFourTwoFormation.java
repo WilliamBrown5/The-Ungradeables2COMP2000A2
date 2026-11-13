@@ -1,11 +1,13 @@
 package Model;
 
 public class FourFourTwoFormation implements TeamFormation {
-
+   
+    @Override
     public String getName() {
         return "4-4-2";
     }
 
+    @Override 
     public int[][] getPositions() {
         return new int[][] {
                 { 120, -150 }, { 120, -50 }, { 120, 50 }, { 120, 150 }, // defenders

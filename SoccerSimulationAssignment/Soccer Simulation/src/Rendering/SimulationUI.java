@@ -9,17 +9,14 @@ import java.util.ArrayList;
 
 import javax.swing.*;
 
-import Model.TimerPanel;
-import Model.SoccerPitch;
-import Model.Player;
-import Model.Match;
+import Model.*;
 
 class UIWindow {
     JFrame frame;
     MenuState currentState;
-    CircleList<String> formationCircle;
-    CircleList<String> homeFormationCircle;
-    CircleList<String> awayFormationCircle;
+    CircleList<TeamFormation> formationCircle;
+    CircleList<TeamFormation> homeFormationCircle;
+    CircleList<TeamFormation> awayFormationCircle;
     CircleList<String> sidesCircle;
     SoccerPitch pitch;
     VerticalPitch vertPitch;
@@ -34,8 +31,9 @@ class UIWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        homeFormationCircle = new CircleList<>(new String[] { "4-4-2", "4-3-3", "3-5-2" });
-        awayFormationCircle = new CircleList<>(new String[] { "4-4-2", "4-3-3", "3-5-2" });
+        TeamFormation[] possibleFormations = {new FourFourTwoFormation(), new FourThreeThreeFormation(), new ThreeFiveTwoFormation()};
+        homeFormationCircle = new CircleList<>(possibleFormations);
+        awayFormationCircle = new CircleList<>(possibleFormations);
         formationCircle = homeFormationCircle;
         sidesCircle = new CircleList<>(new String[] { "Home", "Away" });
         pitch = new SoccerPitch();
@@ -260,7 +258,7 @@ class SettingsMenu extends MenuState {
 }
 
 class FormationMenu extends MenuState {
-    CircleList<String> formationCircle;
+    CircleList<TeamFormation> formationCircle;
     CircleList<String> sidesCircle;
 
     FormationMenu(UIWindow window) {
@@ -273,17 +271,17 @@ class FormationMenu extends MenuState {
         JButton formPrevBtn = new JButton("<");
         JButton formNextBtn = new JButton(">");
 
-        JLabel formationLabel = new JLabel(formationCircle.getCurrent().toString());
+        JLabel formationLabel = new JLabel(formationCircle.getCurrent().getName());
 
         formPrevBtn.addActionListener(e -> {
             formationCircle.previous();
-            formationLabel.setText(formationCircle.getCurrent().toString());
+            formationLabel.setText(formationCircle.getCurrent().getName());
             window.vertPitch.drawPlayers(window);
         });
 
         formNextBtn.addActionListener(e -> {
             formationCircle.next();
-            formationLabel.setText(formationCircle.getCurrent().toString());
+            formationLabel.setText(formationCircle.getCurrent().getName());
             window.vertPitch.drawPlayers(window);
         });
 
@@ -295,7 +293,7 @@ class FormationMenu extends MenuState {
         swapPrevBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
             formationCircle = window.formationCircle;
-            formationLabel.setText(formationCircle.getCurrent());
+            formationLabel.setText(formationCircle.getCurrent().getName());
             swapLabel.setText(sidesCircle.getCurrent().toString());
             window.vertPitch.drawPlayers(window);
         });
@@ -303,7 +301,7 @@ class FormationMenu extends MenuState {
         swapNextBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
             formationCircle = window.formationCircle;
-            formationLabel.setText(formationCircle.getCurrent());
+            formationLabel.setText(formationCircle.getCurrent().getName());
             swapLabel.setText(sidesCircle.getCurrent().toString());
             window.vertPitch.drawPlayers(window);
         });
@@ -584,47 +582,11 @@ class VerticalPitch extends JPanel {
     void drawPlayers(UIWindow window) {
         players.clear(); // avoid stacking duplicates on repeated calls
 
-        String formation = window.formationCircle.getCurrent();
-
-        addPlayer(1, 0.5, 0.92); // goalkeeper, same for every formation
-
-        if (formation.equals("4-4-2")) {
-            addPlayer(2, 0.15, 0.75);
-            addPlayer(3, 0.38, 0.75);
-            addPlayer(4, 0.62, 0.75);
-            addPlayer(5, 0.85, 0.75);
-            addPlayer(6, 0.15, 0.50);
-            addPlayer(7, 0.38, 0.50);
-            addPlayer(8, 0.62, 0.50);
-            addPlayer(9, 0.85, 0.50);
-            addPlayer(10, 0.35, 0.22);
-            addPlayer(11, 0.65, 0.22);
-
-        } else if (formation.equals("4-3-3")) {
-            addPlayer(2, 0.15, 0.75);
-            addPlayer(3, 0.38, 0.75);
-            addPlayer(4, 0.62, 0.75);
-            addPlayer(5, 0.85, 0.75);
-            addPlayer(6, 0.25, 0.50);
-            addPlayer(7, 0.50, 0.50);
-            addPlayer(8, 0.75, 0.50);
-            addPlayer(9, 0.15, 0.20);
-            addPlayer(10, 0.50, 0.18);
-            addPlayer(11, 0.85, 0.20);
-
-        } else if (formation.equals("3-5-2")) {
-            addPlayer(2, 0.25, 0.78);
-            addPlayer(3, 0.50, 0.78);
-            addPlayer(4, 0.75, 0.78);
-            addPlayer(5, 0.08, 0.52);
-            addPlayer(6, 0.30, 0.52);
-            addPlayer(7, 0.50, 0.52);
-            addPlayer(8, 0.70, 0.52);
-            addPlayer(9, 0.92, 0.52);
-            addPlayer(10, 0.35, 0.22);
-            addPlayer(11, 0.65, 0.22);
+        addPlayer(1, 0.5, 0.92); // goalkeeper
+        int jersey = 2;
+        for (int[] pos : window.formationCircle.getCurrent().getPositions()) {
+            addPlayer(jersey++, 0.5 + pos[1] / 430.0, 0.92 - pos[0] / 600.0);
         }
-
         repaint();
     }
 

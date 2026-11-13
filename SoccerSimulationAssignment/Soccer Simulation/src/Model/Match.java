@@ -26,7 +26,7 @@ public class Match {
     private ArrayList<Actor> gameActors;
     private ArrayList<Player> players;
     private final PlayerMovementStrategy chaseStrategy = new ChaseStrategy();
-    private final PlayerMovementStrategy formationStrategy = new HoldFormationStrategy();
+    private final PlayerMovementStrategy holdFormationStrategy = new HoldFormationStrategy();
     private volatile boolean isRunning;
     private volatile boolean isPaused;
     private Thread simulationThread;
@@ -78,7 +78,7 @@ public class Match {
     }
 
     // spawn entities
-    public void setupAndStartSimulation(String homeFormation, String awayFormation) {
+    public void setupAndStartSimulation(TeamFormation homeFormation, TeamFormation awayFormation) {
         // Stop an old loop before starting a new match
         stopSimulation();
         isPaused = false;
@@ -128,7 +128,7 @@ public class Match {
         simulationThread.start();
     }
 
-    // specific grid patterns depending on chosen config
+    // specific grid patterns depending on chosen formation
     private void generateTeamFormation(TeamFormation formation, Color teamColor, boolean isHomeTeam) {
         int centerY = ScreenSize.height / 2;
         int directionX = isHomeTeam ? 1 : -1;
@@ -142,7 +142,7 @@ public class Match {
 
         int n = 2;
         for(int[] pos : formation.getPositions()){
-            players.add(new Player(prefix + n++, baseLineX + directionX * pos[0],  centerY + pos[1], teamColor))
+            players.add(new Player(prefix + n++, baseLineX + directionX * pos[0],  centerY + pos[1], teamColor));
         
         }
     }
@@ -218,7 +218,7 @@ public class Match {
                             chaseStrategy.move(this, p, ballX, ballY);
                         } else {
                             // Everyone else shuffles with the play but keeps formation
-                            formationStrategy.move(this, p, ballX, ballY);
+                            holdFormationStrategy.move(this, p, ballX, ballY);
                         }
                     } else if (p == owner) {
                         // The player in possession dribbles toward the opposing goal
@@ -228,7 +228,7 @@ public class Match {
                         chaseStrategy.move(this, p, owner.getX(), owner.getY());
                     } else {
                         // Everyone else shuffles with the play but keeps formation
-                        formationStrategy.move(this, p, ballX, ballY);
+                        holdFormationStrategy.move(this, p, ballX, ballY);
                     }
                 } catch (InvalidPositionException e) {
                     // This player's move would have taken them off the pitch —
