@@ -55,7 +55,7 @@ import Model.Match;
 
 class UIWindow {
     JFrame frame;
-    Menus currentMenu;
+    MenuState currentState;
     CircleList<String> formationCircle;
     CircleList<String> homeFormationCircle;
     CircleList<String> awayFormationCircle;
@@ -81,16 +81,18 @@ class UIWindow {
 
     }
 
-    void setMenu(Menus menu) {
-        currentMenu = menu;
-        frame.setContentPane(menu);
+    void changeState(MenuState nexState) {
+        if(currentState != null) currentState.onExit();
+        currentState = nexState;
+        frame.setContentPane(nexState);
         frame.revalidate();
         frame.repaint();
         frame.getContentPane().setBackground(Color.decode(backgroundColour));
+        nexState.onEnter();
     }
 
     void start() {
-        setMenu(new MainMenu(this));
+        changeState(new MainMenu(this));
         frame.setVisible(true);
     }
 
@@ -150,18 +152,16 @@ class UIWindow {
 /*
   * DONE
   */
-abstract class Menus extends JPanel {
+abstract class MenuState extends JPanel {
     protected UIWindow window;
 
-    Menus(UIWindow window) {
+    MenuState(UIWindow window) {
         this.window = window;
     }
 
-    abstract void next1();
+    abstract void onEnter();
 
-    abstract void next2();
-
-    abstract void next3();
+    abstract void onExit();
 
     abstract void back();
 }
@@ -169,7 +169,7 @@ abstract class Menus extends JPanel {
 /*
   * DONE
   */
-class MainMenu extends Menus {
+class MainMenu extends MenuState {
     MainMenu(UIWindow window) {
         super(window);
         setLayout(null);
@@ -208,9 +208,6 @@ class MainMenu extends Menus {
         window.setMenu(new SettingsMenu(window));
     }
 
-    @Override
-    void next3() {
-    }
 
     @Override
     void back() {
@@ -222,7 +219,7 @@ class MainMenu extends Menus {
 /*
   * DONE
   */
-class StartMenu extends Menus {
+class StartMenu extends MenuState {
     StartMenu(UIWindow window) {
         super(window);
         setLayout(null);
@@ -285,7 +282,7 @@ class StartMenu extends Menus {
   * NEEDS, to have the debug output make a pop-up window that prints the log of
   * everything that happens
   */
-class SettingsMenu extends Menus {
+class SettingsMenu extends MenuState {
     SettingsMenu(UIWindow window) {
         super(window);
         setLayout(null);
@@ -331,7 +328,7 @@ class SettingsMenu extends Menus {
 /*
   * DONE
   */
-class FormationMenu extends Menus {
+class FormationMenu extends MenuState {
     CircleList<String> formationCircle;
     CircleList<String> sidesCircle;
 
@@ -437,7 +434,7 @@ class FormationMenu extends Menus {
 /*
   * DONE
   */
-class MatchSettingsMenu extends Menus {
+class MatchSettingsMenu extends MenuState {
     MatchSettingsMenu(UIWindow window) {
         super(window);
         setLayout(null);
@@ -479,7 +476,7 @@ class MatchSettingsMenu extends Menus {
 /*
   * running match display
   */
-class SimWindow extends Menus {
+class SimWindow extends MenuState {
     Match match;
     SimWindow(UIWindow window) {
         super(window);
@@ -550,7 +547,7 @@ class SimWindow extends Menus {
 /*
   * DONE
   */
-class SimWindowMenu extends Menus {
+class SimWindowMenu extends MenuState {
     SimWindowMenu(UIWindow window) {
         super(window);
         setLayout(null);
