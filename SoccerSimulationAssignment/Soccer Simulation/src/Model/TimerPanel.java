@@ -62,4 +62,5 @@ public class TimerPanel extends JPanel {
     public int getSecondsRemaining() {
         return matchTimer.getSeconds();
     }
+
 }

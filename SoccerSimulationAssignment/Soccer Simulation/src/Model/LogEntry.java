@@ -1,16 +1,16 @@
 package Model;
 
 public class LogEntry {
-    public enum Type {KICKOFF, POSSESSION, PASS, SHOT_ON_GOAL, TACKLE, CLEARANCE, GOAL, ERROR, FULL_TIME }
+    public enum EventType {KICKOFF, POSSESSION, PASS, SHOT_ON_GOAL, TACKLE, CLEARANCE, GOAL, ERROR, FULL_TIME }
 
     private final long tick;
-    private final Type type;
+    private final EventType eventType;
     private final String team;
     private final String message;
 
-    public LogEntry(long tick, Type type, String team, String message){
+    public LogEntry(long tick, EventType eventType, String team, String message){
         this.tick = tick;
-        this.type = type;
+        this.eventType = eventType;
         this.team = team;
         this.message = message;
     }
@@ -19,8 +19,8 @@ public class LogEntry {
         return tick;
     }
 
-    public Type getType(){
-        return type;
+    public EventType getType(){
+        return eventType;
     }
 
     public String getTeam(){
@@ -33,6 +33,6 @@ public class LogEntry {
 
     @Override 
     public String toString(){
-        return String.format("[%5d] %-10s %s", tick, type, message)
+        return String.format("[%5d] %-10s %s", tick, eventType, message);
     }
 }
