@@ -77,7 +77,7 @@ public class SoccerPitch extends JPanel {
         g.setColor(Color.WHITE);
 
         // Outer border
-        g.drawRect(0, 0, ScreenSize.width, ScreenSize.height);
+        g.drawRect(0, 0, ScreenSize.width , ScreenSize.height );
 
         // Halfway line
         g.drawLine(ScreenSize.width / 2, 0, ScreenSize.width / 2, ScreenSize.height);
@@ -93,12 +93,12 @@ public class SoccerPitch extends JPanel {
         // Penalty areas
         int penaltyY = (ScreenSize.height - PENALTY_HEIGHT) / 2;
         g.drawRect(0, penaltyY, PENALTY_WIDTH, PENALTY_HEIGHT);
-        g.drawRect(ScreenSize.width - PENALTY_WIDTH, penaltyY, PENALTY_WIDTH, PENALTY_HEIGHT);
+        g.drawRect(ScreenSize.width - PENALTY_WIDTH , penaltyY, PENALTY_WIDTH, PENALTY_HEIGHT);
 
         // Goals
         int goalY = (ScreenSize.height - GOAL_HEIGHT) / 2;
         g.drawRect(0, goalY, GOAL_WIDTH, GOAL_HEIGHT);
-        g.drawRect(ScreenSize.width - GOAL_WIDTH, goalY, GOAL_WIDTH, GOAL_HEIGHT);
+        g.drawRect(ScreenSize.width - GOAL_WIDTH , goalY, GOAL_WIDTH, GOAL_HEIGHT);
 
         // Penalty spots
         int spotOffset = 79;
