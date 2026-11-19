@@ -33,6 +33,6 @@ public class LogEntry {
 
     @Override 
     public String toString(){
-        return String.format("[%5d]: %-10s %s", tick, eventType, message);
+        return String.format("[%5d] %-10s: %s", tick, eventType, message);
     }
 }

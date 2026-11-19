@@ -6,6 +6,8 @@ package Rendering;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import javax.swing.*;
 
@@ -255,7 +257,33 @@ class SettingsMenu extends MenuState {
 }
 
 class DebugWindow extends JFrame {
-    
+    private final javax.swing.Timer refresh;
+
+    DebugWindow(MatchLog<LogEntry> log){
+        super("Debug Log");
+        JTextArea text = new JTextArea();
+        text.setEditable(false);
+        add(new JScrollPane(text));
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        refresh = new javax.swing.Timer(500, e -> {
+            String output = log.stream()
+                               .map(LogEntry::toString)
+                               .collect(Collectors.joining("\n")); // should add more here
+            if (!output.equals(text.getText()))                   
+            text.setText(output);
+        });
+
+        refresh.start();
+        setSize(ScreenSize.width / 2, ScreenSize.height);
+        
+    }
+
+    @Override 
+    public void dispose(){
+        refresh.stop();
+        super.dispose();
+    }
 
 }
 
@@ -374,14 +402,20 @@ class MatchSettingsMenu extends MenuState {
 class SimWindow extends MenuState {
     Match match;
     private TimerPanel timerPanel;
+    private DebugWindow debugWindow;
 
     SimWindow(UIWindow window) {
         super(window);
         setLayout(null);
+        
 
         match = new Match();
         window.activeSimulation = this;
         match.setupAndStartSimulation(window.homeFormationCircle.getCurrent(), window.awayFormationCircle.getCurrent());
+        if (window.getDebug()) {
+            debugWindow = new DebugWindow(match.getLog());
+            debugWindow.setVisible(true);
+        }
 
         JButton menuButton = new JButton("Menu");
         menuButton.addActionListener(e -> back());
@@ -426,6 +460,8 @@ class SimWindow extends MenuState {
     void stop() {
         match.stopSimulation();
         timerPanel.stopTimer();
+        if (debugWindow != null)
+            debugWindow.dispose();
     }
 
     @Override

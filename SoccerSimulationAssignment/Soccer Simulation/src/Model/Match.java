@@ -239,13 +239,15 @@ public class Match {
                 } catch (InvalidPositionException e) {
                     // This player's move would have taken them off the pitch 
                     // skip it for this tick and let them try again next tick
-                    log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));                }
+                    log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));               
+                }
             }
 
             try {
                 resolvePlayerCollisions();
             } catch (InvalidPositionException e) {
-                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));            }
+                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));            
+            }
 
             try {
                 attemptTackle();
@@ -640,7 +642,6 @@ public class Match {
         trackedOwnerX = owner.getX();
         trackedOwnerY = owner.getY();
         trackedOwnerTicks = 0;
-        log.add(new LogEntry(tick, LogEntry.EventType.ERROR, team(owner), owner.getName() + " is stuck"));
         return progress < MIN_PROGRESS_DISTANCE;
     }
 
@@ -850,7 +851,7 @@ public class Match {
     public void stopSimulation() {
         this.isRunning = false;
         this.isPaused = false;
-        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Stopping Match"));
+        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Match Stopped"));
 
         if (simulationThread != null && simulationThread != Thread.currentThread()) {
             simulationThread.interrupt();
@@ -858,13 +859,13 @@ public class Match {
     }
 
     public void pauseSimulation() {
-        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Pausing Match"));
+        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Match Paused"));
         isPaused = true;
     }
 
     public void resumeSimulation() {
         if (isRunning) {
-            log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Resuming Match"));
+            log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Match Resumed"));
             isPaused = false;
         } 
     }
