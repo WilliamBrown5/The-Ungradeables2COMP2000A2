@@ -35,6 +35,7 @@ public class Match {
     private int trafficTicks;
     private int contestedTicks;
     private int clearanceCooldown;
+    private double speed = 1.0;
 
     private static final int MIN_TICKS_BEFORE_RANDOM_KICK = 30;
     private static final int MAX_POSSESSION_TICKS = 105;
@@ -875,5 +876,9 @@ public class Match {
             return "HOME";
         }
         return "AWAY";
+    }
+
+    public void setSpeed(double speed){
+        this.speed = speed;
     }
 }

@@ -19,6 +19,8 @@ class UIWindow {
     CircleList<TeamFormation> homeFormationCircle;
     CircleList<TeamFormation> awayFormationCircle;
     CircleList<String> sidesCircle;
+    CircleList<Integer> matchTimeCircle;
+    CircleList<Double> matchSpeedCircle;
     SoccerPitch pitch;
     VerticalPitch vertPitch;
     SimWindow activeSimulation;
@@ -38,6 +40,8 @@ class UIWindow {
         awayFormationCircle = new CircleList<>(possibleFormations);
         formationCircle = homeFormationCircle;
         sidesCircle = new CircleList<>(new String[] { "Home", "Away" });
+        matchTimeCircle = new CircleList<>(new Integer[] {90, 120, 60, 30});
+        matchSpeedCircle = new CircleList<>(new Double[] {1.0, 1.5, 2.0, 0.5});
         pitch = new SoccerPitch();
         vertPitch = new VerticalPitch();
 
@@ -376,17 +380,68 @@ class MatchSettingsMenu extends MenuState {
         super(window);
         setLayout(null);
 
+        JButton timePrevBtn = new JButton("<");
+        JButton timeNextBtn = new JButton(">");
+
+        JLabel timeLabel = new JLabel(window.matchTimeCircle.getCurrent() + " Seconds");
+
+        timePrevBtn.addActionListener(e -> {
+            window.matchTimeCircle.previous();
+            timeLabel.setText(window.matchTimeCircle.getCurrent().toString() + " Seconds");
+        });
+
+        timeNextBtn.addActionListener(e -> {
+            window.matchTimeCircle.next();
+            timeLabel.setText(window.matchTimeCircle.getCurrent().toString() + " Seconds");
+        });
+
+        JButton speedPrevBtn = new JButton("<");
+        JButton speedNextBtn = new JButton(">");
+
+        JLabel speedLabel = new JLabel("x" + window.matchSpeedCircle.getCurrent() + " Speed");
+
+        speedPrevBtn.addActionListener(e -> {
+            window.matchSpeedCircle.previous();
+            speedLabel.setText("x" + window.matchSpeedCircle.getCurrent().toString() + " Speed");
+        });
+
+        speedNextBtn.addActionListener(e -> {
+            window.matchSpeedCircle.next();
+            speedLabel.setText("x" + window.matchSpeedCircle.getCurrent().toString() + " Speed");
+        });
+
+        JLabel[] labels = { timeLabel, speedLabel };
+        window.displayLabel(labels);
+
+
+        timePrevBtn.setBounds(ScreenSize.width / 2 - 125, ScreenSize.height / 2 - 100, 45, 50);
+        timeLabel.setBounds(ScreenSize.width / 2 - 75, ScreenSize.height / 2 - 100, 150, 50);
+        timeNextBtn.setBounds(ScreenSize.width / 2 + 80, ScreenSize.height / 2 - 100, 45, 50);
+
+        speedPrevBtn.setBounds(ScreenSize.width / 2 - 125, ScreenSize.height / 2 - 30, 45, 50);
+        speedLabel.setBounds(ScreenSize.width / 2 - 75, ScreenSize.height / 2 - 30, 150, 50);
+        speedNextBtn.setBounds(ScreenSize.width / 2 + 80, ScreenSize.height / 2 - 30, 45, 50);
+
         JButton exitButton = new JButton("Save");
         exitButton.addActionListener(e -> back());
 
-        JButton[] buttons = { exitButton };
+        JButton[] buttons = {timePrevBtn, timeNextBtn, speedPrevBtn, speedNextBtn, exitButton };
 
         window.displayButtons(buttons);
 
-        exitButton.setBounds(ScreenSize.width / 2 - 125, ScreenSize.height / 2 - 100, 250, 50);
+        exitButton.setBounds(ScreenSize.width / 2 - 125, ScreenSize.height / 2 + 40, 250, 50);
+
+        add(timePrevBtn);
+        add(timeLabel);
+        add(timeNextBtn);
+
+        add(speedPrevBtn);
+        add(speedLabel);
+        add(speedNextBtn);
 
         add(exitButton);
     }
+    
 
     @Override
     void back() {
@@ -396,7 +451,7 @@ class MatchSettingsMenu extends MenuState {
 
 class SimWindow extends MenuState {
     Match match;
-    private TimerPanel timerPanel;
+    private TimerPanel matchTimerPanel;
     private DebugWindow debugWindow;
 
     SimWindow(UIWindow window) {
@@ -423,11 +478,11 @@ class SimWindow extends MenuState {
 
         menuButton.setBounds(ScreenSize.width / 5 - 125, ScreenSize.height - 385, 80, 40);
 
-        timerPanel = new TimerPanel(match);
-        timerPanel.setBounds(ScreenSize.width / 2 - 75, 20, 150, 40);
+        matchTimerPanel = new TimerPanel(match, window.matchTimeCircle.getCurrent());
+        matchTimerPanel.setBounds(ScreenSize.width / 2 - 75, 20, 150, 40);
 
         match.pitch.setBounds(0, 0, ScreenSize.width, ScreenSize.height);
-        add(timerPanel);
+        add(matchTimerPanel);
         add(menuButton);
         add(match.pitch);
 
@@ -445,18 +500,18 @@ class SimWindow extends MenuState {
     @Override
     void onEnter() {
         match.resumeSimulation();
-        timerPanel.resumeTimer();
+        matchTimerPanel.resumeTimer();
     }
 
     @Override
     void onExit() {
         match.pauseSimulation();
-        timerPanel.stopTimer();
+        matchTimerPanel.stopTimer();
     }
 
     void stop() {
         match.stopSimulation();
-        timerPanel.stopTimer();
+        matchTimerPanel.stopTimer();
         if (debugWindow != null)
             debugWindow.dispose();
     }
