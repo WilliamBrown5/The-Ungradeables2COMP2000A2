@@ -129,7 +129,7 @@ public class SoccerPitch extends JPanel {
         if(getScoreboardVisible()){
             scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
         } else {
-            scoreText = "Soccer Simulation :)";
+            scoreText = "Soccer Simulation : )";
         }
         FontMetrics scoreMetrics = g.getFontMetrics();
         int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
