@@ -110,10 +110,6 @@ public class Ball implements Actor {
         return Color.WHITE;
     }
 
-    @Override
-    public ActorShapeEnum getShape() {
-        return ActorShapeEnum.CIRCLE;
-    }
 
     @Override
     public void moveUp(int distance) {

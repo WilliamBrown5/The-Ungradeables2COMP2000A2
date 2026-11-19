@@ -66,8 +66,6 @@ public class Match {
         this.pitch = new SoccerPitch();
         this.gameActors = new ArrayList<>();
         this.players = new ArrayList<>();
-        this.isRunning = false;
-        this.isPaused = false;
     }
 
     public MatchLog<LogEntry> getLog() {
@@ -582,17 +580,6 @@ public class Match {
         return Math.sqrt((dx * dx) + (dy * dy));
     }
 
-    // If no useful pass is available, kick random direction for variation
-    private void kickBallRandomly(Player kicker) {
-        double randomAngle = random.nextDouble() * Math.PI * 2;
-        int kickSpeed = 6 + random.nextInt(4);
-
-        int velocityX = (int) Math.round(Math.cos(randomAngle) * kickSpeed);
-        int velocityY = (int) Math.round(Math.sin(randomAngle) * kickSpeed);
-
-        ball.kick(velocityX, velocityY);
-        log.add(new LogEntry(tick, LogEntry.EventType.KICK, team(kicker),kicker.getName() + " has kicked the ball randomly"));
-    }
 
     private boolean shouldShoot(Player player) {
         int goalX = isHome(player) ? ScreenSize.width : 0;
@@ -882,17 +869,6 @@ public class Match {
         log.add(new LogEntry(tick, LogEntry.EventType.FULL_TIME, "", "Final score " + homeScore + " - " + awayScore));
     }
 
-    public int getHomeScore() {
-        return homeScore;
-    }
-
-    public int getAwayScore() {
-        return awayScore;
-    }
-
-    public ArrayList<Actor> getGameActors() {
-        return this.gameActors;
-    }
 
     private String team(Player p) {
         if (isHome(p)) {

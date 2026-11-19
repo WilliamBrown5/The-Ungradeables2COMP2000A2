@@ -11,18 +11,15 @@ public class TimerPanel extends JPanel {
     private MatchTimer matchTimer;
     private JLabel timerLabel;
     private Timer timer;
-    private Match match;
+    private Match matchMain;
 
-    public TimerPanel(){
-        this(null, 90);
-    }
 
     public TimerPanel(Match match) {
         this(match, 90);
     }
 
     public TimerPanel(Match match, int startingSeconds) {
-        this.match = match;
+        this.matchMain = match;
         matchTimer = new MatchTimer(startingSeconds);
         timerLabel = new JLabel(matchTimer.getTime(), SwingConstants.CENTER);
         timerLabel.setFont(new Font("Lexend", Font.BOLD, 24));
@@ -36,8 +33,8 @@ public class TimerPanel extends JPanel {
             if (matchTimer.getSeconds() == 0) {
                 timer.stop();
 
-                if (match != null) {
-                    match.finishMatch();
+                if (matchMain != null) {
+                    matchMain.finishMatch();
                 }
             }
         });
@@ -49,9 +46,6 @@ public class TimerPanel extends JPanel {
         timer.stop();
     }
 
-    public void pauseTimer() {
-        timer.stop();
-    }
 
     public void resumeTimer() {
         if (!timer.isRunning() && matchTimer.getSeconds() > 0) {
@@ -59,8 +53,5 @@ public class TimerPanel extends JPanel {
         }
     }
 
-    public int getSecondsRemaining() {
-        return matchTimer.getSeconds();
-    }
 
 }

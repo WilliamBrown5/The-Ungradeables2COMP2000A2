@@ -1,4 +1,3 @@
-// Actor.java
 package Model;
 
 import java.awt.Color;
@@ -16,5 +15,4 @@ public interface Actor {
 
     // visual
     Color getColor();
-    ActorShapeEnum getShape();
 }

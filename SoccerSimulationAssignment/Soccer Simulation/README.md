@@ -1,18 +1,5 @@
-## Getting Started
+## Instructions for running the simulation
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Please run the simulationUI.java file that is the main file that will allow you to run and see the simulation, then when the window appears you can navigate the UI and set certain settings, in order to run the main simulation on the main menu press the 'Start' button, in this next menu you can change the some settings pertaining to the match, once you have changed any settings you can start the simulation by pressing the 'Start' button, now the simulation is running with the configuaration that was set in the menu before, to pause the simulation press the 'Menu' button in the top left corner this will pause the simulation and allow you to resume the simulation or exit from the simulation.
 
-## Folder Structure
-
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+One key setting is the 'Debug Mode' button in the settings that are accesible from the main menu, this will create a new window when the simulation is running and it will display all the important actions that are happening within the simulation and the log will pause when the simulation is paused and then you will be able to scroll up in the log, when the simulation is running the log will not allow you to scroll up so please be mindful of that.

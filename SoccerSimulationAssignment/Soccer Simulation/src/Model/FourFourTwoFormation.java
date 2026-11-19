@@ -13,7 +13,6 @@ public class FourFourTwoFormation implements TeamFormation {
                 { 120, -150 }, { 120, -50 }, { 120, 50 }, { 120, 150 }, // defenders
                 { 280, -150 }, { 280, -50 }, { 280, 50 }, { 280, 150 }, // midfielders
                 { 420, -60 }, { 420, 60 }                               // strikers
-                                                                        // goalies are static essentially and are added later
         };
     }
 }

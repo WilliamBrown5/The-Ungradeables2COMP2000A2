@@ -91,10 +91,7 @@ public class Player implements Actor {
         return this.colour;
     }
 
-    @Override
-    public ActorShapeEnum getShape() {
-        return ActorShapeEnum.CIRCLE;
-    }
+
 
     public void moveUp(int distance) {
         int newY = this.y - distance;

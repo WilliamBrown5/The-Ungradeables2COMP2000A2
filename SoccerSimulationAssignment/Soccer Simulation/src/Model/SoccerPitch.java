@@ -18,6 +18,7 @@ public class SoccerPitch extends JPanel {
     public static final int PENALTY_HEIGHT = 200;
     public static final int GOAL_WIDTH = 50;
     public static final int GOAL_HEIGHT = 100;
+    public boolean isScoreboardVisalbe;
 
     private static final class ActorFrame {
         private final int x;
@@ -64,6 +65,15 @@ public class SoccerPitch extends JPanel {
         repaint();
     }
 
+    public void setScoreboardVisable(boolean status){
+        this.isScoreboardVisalbe = status;
+    }
+
+    public boolean getScoreboardVisable(){
+        return this.isScoreboardVisalbe;
+    }
+
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -111,13 +121,24 @@ public class SoccerPitch extends JPanel {
             g.fillOval(actor.x - 9, actor.y - 9, 18, 18);
         }
 
+
         // Scoreboard
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Lexend", Font.BOLD, 22));
-        String scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
-        FontMetrics scoreMetrics = g.getFontMetrics();
-        int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
-        g.drawString(scoreText, scoreX, 88);
+        if(getScoreboardVisable() == true){
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Lexend", Font.BOLD, 22));
+            String scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
+            FontMetrics scoreMetrics = g.getFontMetrics();
+            int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
+            g.drawString(scoreText, scoreX, 88);
+        } else {
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Lexend", Font.BOLD, 22));
+            String scoreText = "Soccer Simulation :)";
+            FontMetrics scoreMetrics = g.getFontMetrics();
+            int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
+            g.drawString(scoreText, scoreX, 88);
+        }
+        
 
         // Temporary goal message or final full-time result
         if (!message.isEmpty()) {

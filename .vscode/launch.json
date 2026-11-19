@@ -10,33 +10,6 @@
             "request": "launch",
             "mainClass": "Rendering.SimulationUI",
             "projectName": "The-Ungradeables2COMP2000A2_a48fd015"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "App",
-            "request": "launch",
-            "mainClass": "App",
-            "projectName": "The-Ungradeables2COMP2000_dc2d33cd"
-        },
-        {
-            "type": "java",
-            "name": "RenderEngine",
-            "request": "launch",
-            "mainClass": "Rendering.RenderEngine",
-            "projectName": "The-Ungradeables2COMP2000_dc2d33cd"
-        },
-        {
-            "type": "java",
-            "name": "SimulationUI",
-            "request": "launch",
-            "mainClass": "Rendering.SimulationUI",
-            "projectName": "The-Ungradeables2COMP2000_dc2d33cd"
         }
     ]
 }

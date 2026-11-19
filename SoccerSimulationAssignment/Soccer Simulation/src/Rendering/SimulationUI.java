@@ -288,51 +288,48 @@ class DebugWindow extends JFrame {
 }
 
 class FormationMenu extends MenuState {
-    CircleList<TeamFormation> formationCircle;
-    CircleList<String> sidesCircle;
+  
 
     FormationMenu(UIWindow window) {
         super(window);
         setLayout(null);
         window.vertPitch.setBounds(0, 0, 700, 400);
 
-        this.formationCircle = window.formationCircle;
-        this.sidesCircle = window.sidesCircle;
         JButton formPrevBtn = new JButton("<");
         JButton formNextBtn = new JButton(">");
 
-        JLabel formationLabel = new JLabel(formationCircle.getCurrent().getName());
+        JLabel formationLabel = new JLabel(window.formationCircle.getCurrent().getName());
 
         formPrevBtn.addActionListener(e -> {
-            formationCircle.previous();
-            formationLabel.setText(formationCircle.getCurrent().getName());
+            window.formationCircle.previous();
+            formationLabel.setText(window.formationCircle.getCurrent().getName());
             window.vertPitch.drawPlayers(window);
         });
 
         formNextBtn.addActionListener(e -> {
-            formationCircle.next();
-            formationLabel.setText(formationCircle.getCurrent().getName());
+            window.formationCircle.next();
+            formationLabel.setText(window.formationCircle.getCurrent().getName());
             window.vertPitch.drawPlayers(window);
         });
 
         JButton swapPrevBtn = new JButton("<");
         JButton swapNextBtn = new JButton(">");
 
-        JLabel swapLabel = new JLabel(sidesCircle.getCurrent().toString());
+        JLabel swapLabel = new JLabel(window.sidesCircle.getCurrent());
 
         swapPrevBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
-            formationCircle = window.formationCircle;
-            formationLabel.setText(formationCircle.getCurrent().getName());
-            swapLabel.setText(sidesCircle.getCurrent().toString());
+            window.formationCircle = window.formationCircle;
+            formationLabel.setText(window.formationCircle.getCurrent().getName());
+            swapLabel.setText(window.sidesCircle.getCurrent());
             window.vertPitch.drawPlayers(window);
         });
 
         swapNextBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
-            formationCircle = window.formationCircle;
-            formationLabel.setText(formationCircle.getCurrent().getName());
-            swapLabel.setText(sidesCircle.getCurrent().toString());
+            window.formationCircle = window.formationCircle;
+            formationLabel.setText(window.formationCircle.getCurrent().getName());
+            swapLabel.setText(window.sidesCircle.getCurrent());
             window.vertPitch.drawPlayers(window);
         });
 
@@ -416,6 +413,8 @@ class SimWindow extends MenuState {
             debugWindow = new DebugWindow(match.getLog());
             debugWindow.setVisible(true);
         }
+        match.pitch.setScoreboardVisable(true);
+        
 
         JButton menuButton = new JButton("Menu");
         menuButton.addActionListener(e -> back());
@@ -454,7 +453,7 @@ class SimWindow extends MenuState {
     @Override
     void onExit() {
         match.pauseSimulation();
-        timerPanel.pauseTimer();
+        timerPanel.stopTimer();
     }
 
     void stop() {
