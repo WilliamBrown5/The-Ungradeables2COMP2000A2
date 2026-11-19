@@ -2,7 +2,6 @@
 package Model;
 
 import java.awt.*;
-import javax.swing.*;
 import Rendering.ScreenSize;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -246,13 +245,13 @@ public class Match {
             try {
                 resolvePlayerCollisions();
             } catch (InvalidPositionException e) {
-                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));            
+                logError(e.getMessage());            
             }
 
             try {
                 attemptTackle();
             } catch (InvalidPositionException e) {
-                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));
+                logError(e.getMessage());
             }
 
             if (clearBallFromTraffic()) {
@@ -474,6 +473,9 @@ public class Match {
     }
 
     void moveToward(Player p, int targetX, int targetY, int speed) {
+        targetX = clamp(targetX, 9, ScreenSize.width - 9);
+        targetY = clamp(targetY, 9, ScreenSize.height - 9);
+
         if (p.getX() < targetX) {
             p.moveRight(Math.min(speed, targetX - p.getX()));
         } else if (p.getX() > targetX) {
@@ -815,6 +817,11 @@ public class Match {
         if (gk.getY() > maxY) gk.moveUp(gk.getY() - maxY);
     }
 
+    // Push a player by (dx, dy), stopping at the edge of the pitch instead of going off it
+    private void pushPlayer(Player p, int dx, int dy) {
+        moveToward(p, p.getX() + dx, p.getY() + dy, ScreenSize.width);
+    }
+
     private void resolvePlayerCollisions() {
         int minDistance = 20; // slightly more than ~18px draw diameter, so they touch but don't overlap
 
@@ -827,22 +834,18 @@ public class Match {
                 int dy = b.getY() - a.getY();
                 double distance = Math.sqrt((dx * dx) + (dy * dy));
 
-                // If two players are in exactly the same spot, separate them first
                 if (distance == 0) {
                     int push = minDistance / 2;
-                    a.moveLeft(push);
-                    b.moveRight(push);
+                    pushPlayer(a, -push, 0);
+                    pushPlayer(b, push, 0);
                 } else if (distance < minDistance) {
                     double overlap = (minDistance - distance) / 2;
                     int pushX = (int) Math.round(overlap * (dx / distance));
                     int pushY = (int) Math.round(overlap * (dy / distance));
 
                     // push a and b apart along the line connecting them
-                    if (pushX > 0) { a.moveLeft(pushX); b.moveRight(pushX); }
-                    else if (pushX < 0) { a.moveRight(-pushX); b.moveLeft(-pushX); }
-
-                    if (pushY > 0) { a.moveUp(pushY); b.moveDown(pushY); }
-                    else if (pushY < 0) { a.moveDown(-pushY); b.moveUp(-pushY); }
+                    pushPlayer(a, -pushX, -pushY);
+                    pushPlayer(b, pushX, pushY);
                 }
             }
         }

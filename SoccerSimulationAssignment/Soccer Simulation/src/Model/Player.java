@@ -93,7 +93,7 @@ public class Player implements Actor {
 
     @Override
     public ActorShapeEnum getShape() {
-        return ActorShapeEnum.SQUARE;
+        return ActorShapeEnum.CIRCLE;
     }
 
     public void moveUp(int distance) {

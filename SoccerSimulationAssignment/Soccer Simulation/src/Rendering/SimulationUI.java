@@ -6,7 +6,6 @@ package Rendering;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
@@ -29,10 +28,11 @@ class UIWindow {
 
     public UIWindow() {
         frame = new JFrame("Soccer Simulation");
-        frame.setSize(ScreenSize.width, ScreenSize.height);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setResizable(false);
+        frame.setResizable(false); 
+        frame.getContentPane().setPreferredSize(new Dimension(ScreenSize.width, ScreenSize.height));
+        frame.pack(); 
+        frame.setLocationRelativeTo(null); 
         TeamFormation[] possibleFormations = {new FourFourTwoFormation(), new FourThreeThreeFormation(), new ThreeFiveTwoFormation(), new FourFiveOneFormation()};
         homeFormationCircle = new CircleList<>(possibleFormations);
         awayFormationCircle = new CircleList<>(possibleFormations);
