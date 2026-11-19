@@ -319,7 +319,6 @@ class FormationMenu extends MenuState {
 
         swapPrevBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
-            window.formationCircle = window.formationCircle;
             formationLabel.setText(window.formationCircle.getCurrent().getName());
             swapLabel.setText(window.sidesCircle.getCurrent());
             window.vertPitch.drawPlayers(window);
@@ -327,7 +326,6 @@ class FormationMenu extends MenuState {
 
         swapNextBtn.addActionListener(e -> {
             window.vertPitch.swapSides(window);
-            window.formationCircle = window.formationCircle;
             formationLabel.setText(window.formationCircle.getCurrent().getName());
             swapLabel.setText(window.sidesCircle.getCurrent());
             window.vertPitch.drawPlayers(window);
@@ -413,7 +411,7 @@ class SimWindow extends MenuState {
             debugWindow = new DebugWindow(match.getLog());
             debugWindow.setVisible(true);
         }
-        match.pitch.setScoreboardVisable(true);
+        match.pitch.setScoreboardVisible(true);
         
 
         JButton menuButton = new JButton("Menu");

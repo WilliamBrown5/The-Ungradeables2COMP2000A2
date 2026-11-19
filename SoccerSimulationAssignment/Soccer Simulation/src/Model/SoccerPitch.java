@@ -18,7 +18,7 @@ public class SoccerPitch extends JPanel {
     public static final int PENALTY_HEIGHT = 200;
     public static final int GOAL_WIDTH = 50;
     public static final int GOAL_HEIGHT = 100;
-    public boolean isScoreboardVisalbe;
+    public boolean isScoreboardVisible;
 
     private static final class ActorFrame {
         private final int x;
@@ -65,12 +65,12 @@ public class SoccerPitch extends JPanel {
         repaint();
     }
 
-    public void setScoreboardVisable(boolean status){
-        this.isScoreboardVisalbe = status;
+    public void setScoreboardVisible(boolean status){
+        this.isScoreboardVisible = status;
     }
 
-    public boolean getScoreboardVisable(){
-        return this.isScoreboardVisalbe;
+    public boolean getScoreboardVisible(){
+        return this.isScoreboardVisible;
     }
 
     
@@ -123,21 +123,17 @@ public class SoccerPitch extends JPanel {
 
 
         // Scoreboard
-        if(getScoreboardVisable() == true){
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Lexend", Font.BOLD, 22));
-            String scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
-            FontMetrics scoreMetrics = g.getFontMetrics();
-            int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
-            g.drawString(scoreText, scoreX, 88);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Lexend", Font.BOLD, 22));
+        String scoreText;
+        if(getScoreboardVisible()){
+            scoreText = "HOME  " + homeScore + "  -  " + awayScore + "  AWAY";
         } else {
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Lexend", Font.BOLD, 22));
-            String scoreText = "Soccer Simulation :)";
-            FontMetrics scoreMetrics = g.getFontMetrics();
-            int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
-            g.drawString(scoreText, scoreX, 88);
+            scoreText = "Soccer Simulation :)";
         }
+        FontMetrics scoreMetrics = g.getFontMetrics();
+        int scoreX = (ScreenSize.width - scoreMetrics.stringWidth(scoreText)) / 2;
+        g.drawString(scoreText, scoreX, 88);
         
 
         // Temporary goal message or final full-time result
