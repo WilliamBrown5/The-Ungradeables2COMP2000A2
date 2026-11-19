@@ -58,12 +58,27 @@ public class Match {
     private int awayScore;
     private int goalPauseTicks;
 
+    // Debug stream stuff
+    private final MatchLog<LogEntry> log = new MatchLog<>();
+    private int tick;
+
     public Match() {
         this.pitch = new SoccerPitch();
         this.gameActors = new ArrayList<>();
         this.players = new ArrayList<>();
         this.isRunning = false;
         this.isPaused = false;
+    }
+
+    public MatchLog<LogEntry> getLog() {
+        return log;
+    }
+
+    private String team(Player p){
+        if(isHome(p)){
+            return "HOME";
+        }
+        return "AWAY";
     }
 
     // spawn entities
@@ -115,6 +130,7 @@ public class Match {
         this.isRunning = true;
         simulationThread = new Thread(this::runSimulationEngineLoop, "soccer-simulation");
         simulationThread.start();
+        log.add(new LogEntry(tick, LogEntry.EventType.KICKOFF, "", homeFormation.getName() + " vs " + awayFormation.getName()));
     }
 
     // specific grid patterns depending on chosen formation
@@ -143,6 +159,7 @@ public class Match {
                 if (!pauseForNextFrame()) break;
                 continue;
             }
+            tick++;
             updateStunnedPlayers();
 
             // Briefly hold the reset formation after a goal before restarting
@@ -220,22 +237,20 @@ public class Match {
                         holdFormationStrategy.move(this, p, ballX, ballY);
                     }
                 } catch (InvalidPositionException e) {
-                    // This player's move would have taken them off the pitch —
+                    // This player's move would have taken them off the pitch 
                     // skip it for this tick and let them try again next tick
-                    System.out.println(e.getMessage());
-                }
+                    log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));                }
             }
 
             try {
                 resolvePlayerCollisions();
             } catch (InvalidPositionException e) {
-                System.out.println(e.getMessage());
-            }
+                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));            }
 
             try {
                 attemptTackle();
             } catch (InvalidPositionException e) {
-                System.out.println(e.getMessage());
+                log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));
             }
 
             if (clearBallFromTraffic()) {
@@ -262,6 +277,7 @@ public class Match {
                     ball.setOwner(collector);
                     possessionTicks = 0;
                     ticksUntilPass = 40 + random.nextInt(35);
+                    log.add(new LogEntry(tick, LogEntry.EventType.POSSESSION, team(collector), collector.getName() + " collects the ball"));
                 }
             } else {
                 ticksUntilPass--;
@@ -345,6 +361,7 @@ public class Match {
         pitch.setMatchMessage("GOAL! " + scoringTeam);
         resetForKickoff();
         goalPauseTicks = 60; // about one second at 60 fps
+        log.add(new LogEntry(tick, LogEntry.EventType.GOAL, scoringTeam, "GOAL " + homeScore + " - " + awayScore));
         return true;
     }
 
@@ -443,6 +460,7 @@ public class Match {
 
         possessionTicks = 0;
         ticksUntilPass = 40 + random.nextInt(35);
+        log.add(new LogEntry(tick, LogEntry.EventType.TACKLE, team(tackler), tackler.getName() + " tackles " + playerWhoLostBall.getName()));
     }
 
     private boolean isHome(Player p) {
@@ -569,6 +587,7 @@ public class Match {
         int velocityY = (int) Math.round(Math.sin(randomAngle) * kickSpeed);
 
         ball.kick(velocityX, velocityY);
+        log.add(new LogEntry(tick, LogEntry.EventType.KICK, team(kicker),kicker.getName() + " has kicked the ball randomly"));
     }
 
     private boolean shouldShoot(Player player) {
@@ -583,6 +602,7 @@ public class Match {
         int goalX = isHome(player) ? ScreenSize.width : 0;
         int goalY = ScreenSize.height / 2 + random.nextInt(61) - 30;
         kickTowards(goalX, goalY, 12);
+        log.add(new LogEntry(tick, LogEntry.EventType.SHOT_ON_GOAL, team(player), player.getName() + " shoots"));
     }
 
     private void kickBallForward(Player player) {
@@ -592,6 +612,7 @@ public class Match {
         int targetY = clamp(ball.getY() + random.nextInt(241) - 120,
                 35, ScreenSize.height - 35);
         kickTowards(targetX, targetY, 10);
+        log.add(new LogEntry(tick, LogEntry.EventType.KICK, team(player), player.getName() + " has kicked the ball forward"));
     }
 
     private void kickTowards(int targetX, int targetY, int speed) {
@@ -600,6 +621,7 @@ public class Match {
         double distance = Math.max(1, distanceBetween(ball.getX(), ball.getY(), targetX, targetY));
         ball.kick((int) Math.round(dx * speed / distance),
                 (int) Math.round(dy * speed / distance));
+
     }
 
     private boolean isOwnerStuck(Player owner) {
@@ -618,6 +640,7 @@ public class Match {
         trackedOwnerX = owner.getX();
         trackedOwnerY = owner.getY();
         trackedOwnerTicks = 0;
+        log.add(new LogEntry(tick, LogEntry.EventType.ERROR, team(owner), owner.getName() + " is stuck"));
         return progress < MIN_PROGRESS_DISTANCE;
     }
 
@@ -689,6 +712,7 @@ public class Match {
         trafficTicks = 0;
         contestedTicks = 0;
         clearanceCooldown = CLEARANCE_COOLDOWN;
+        log.add(new LogEntry(tick, LogEntry.EventType.CLEARANCE, kicker != null ? team(kicker) : "", "Ball cleared from traffic"));
         return true;
     }
 
@@ -710,6 +734,7 @@ public class Match {
                     ? clamp(kicker.getY() + 180, 45, ScreenSize.height - 45)
                     : clamp(kicker.getY() - 180, 45, ScreenSize.height - 45);
         }
+        log.add(new LogEntry(tick, LogEntry.EventType.KICK, team(kicker), kicker.getName() + " has kicked the ball out of traffic"));
         kickTowards(targetX, targetY, 11);
     }
 
@@ -772,6 +797,7 @@ public class Match {
         int velocityY = (int) Math.round((dy / distance) * passSpeed);
 
         ball.kick(velocityX, velocityY);
+        log.add(new LogEntry(tick, LogEntry.EventType.PASS, team(passer), passer.getName() + " -> " + bestTarget.getName()));
         return true;
     }
 
@@ -824,6 +850,7 @@ public class Match {
     public void stopSimulation() {
         this.isRunning = false;
         this.isPaused = false;
+        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Stopping Match"));
 
         if (simulationThread != null && simulationThread != Thread.currentThread()) {
             simulationThread.interrupt();
@@ -831,11 +858,15 @@ public class Match {
     }
 
     public void pauseSimulation() {
+        log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Pausing Match"));
         isPaused = true;
     }
 
     public void resumeSimulation() {
-        if (isRunning) isPaused = false;
+        if (isRunning) {
+            log.add(new LogEntry(tick, LogEntry.EventType.STATUS, "", "Resuming Match"));
+            isPaused = false;
+        } 
     }
 
     // Called by TimerPanel when the match clock reaches 00:00
@@ -844,6 +875,7 @@ public class Match {
         pitch.setScore(homeScore, awayScore);
         pitch.setMatchMessage("FULL TIME: HOME " + homeScore + " - " + awayScore + " AWAY");
         pitch.setActors(gameActors);
+        log.add(new LogEntry(tick, LogEntry.EventType.FULL_TIME, "", "Final score " + homeScore + " - " + awayScore));
     }
 
     public int getHomeScore() {

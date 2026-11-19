@@ -1,7 +1,7 @@
 package Model;
 
 public class LogEntry {
-    public enum EventType {KICKOFF, POSSESSION, PASS, SHOT_ON_GOAL, TACKLE, CLEARANCE, GOAL, ERROR, FULL_TIME }
+    public enum EventType {KICKOFF, POSSESSION, PASS, SHOT_ON_GOAL, TACKLE, CLEARANCE, GOAL, ERROR, FULL_TIME, STATUS, KICK }
 
     private final long tick;
     private final EventType eventType;
@@ -33,6 +33,6 @@ public class LogEntry {
 
     @Override 
     public String toString(){
-        return String.format("[%5d] %-10s %s", tick, eventType, message);
+        return String.format("[%5d]: %-10s %s", tick, eventType, message);
     }
 }

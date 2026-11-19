@@ -9,9 +9,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MatchLog<T> {
     private final List<T> entries = new CopyOnWriteArrayList<>();
 
-
-
-
     public void add(T entry){
         entries.add(entry);
     }
@@ -20,5 +17,4 @@ public class MatchLog<T> {
         return entries.stream();
     }
 
-    
 }

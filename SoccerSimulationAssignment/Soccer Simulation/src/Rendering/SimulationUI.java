@@ -224,10 +224,7 @@ class StartMenu extends MenuState {
 
 }
 
-/*
- * NEEDS, to have the debug output make a pop-up window that prints the log of
- * everything that happens
- */
+
 class SettingsMenu extends MenuState {
     SettingsMenu(UIWindow window) {
         super(window);
@@ -255,6 +252,11 @@ class SettingsMenu extends MenuState {
     void back() {
         window.changeState(new MainMenu(window));
     }
+}
+
+class DebugWindow extends JFrame {
+    
+
 }
 
 class FormationMenu extends MenuState {
