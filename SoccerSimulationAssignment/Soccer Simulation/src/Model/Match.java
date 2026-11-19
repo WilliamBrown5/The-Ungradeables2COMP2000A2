@@ -61,6 +61,7 @@ public class Match {
     // Debug stream stuff
     private final MatchLog<LogEntry> log = new MatchLog<>();
     private int tick;
+    private String lastError = "";
 
     public Match() {
         this.pitch = new SoccerPitch();
@@ -74,12 +75,13 @@ public class Match {
         return log;
     }
 
-    private String team(Player p){
-        if(isHome(p)){
-            return "HOME";
+    private void logError(String message) {
+        if (!message.equals(lastError)) {
+            log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", message));
+            lastError = message;
         }
-        return "AWAY";
     }
+
 
     // spawn entities
     public void setupAndStartSimulation(TeamFormation homeFormation, TeamFormation awayFormation) {
@@ -237,9 +239,7 @@ public class Match {
                         holdFormationStrategy.move(this, p, ballX, ballY);
                     }
                 } catch (InvalidPositionException e) {
-                    // This player's move would have taken them off the pitch 
-                    // skip it for this tick and let them try again next tick
-                    log.add(new LogEntry(tick, LogEntry.EventType.ERROR, "", e.getMessage()));               
+                    logError(e.getMessage());
                 }
             }
 
@@ -889,5 +889,12 @@ public class Match {
 
     public ArrayList<Actor> getGameActors() {
         return this.gameActors;
+    }
+
+    private String team(Player p) {
+        if (isHome(p)) {
+            return "HOME";
+        }
+        return "AWAY";
     }
 }

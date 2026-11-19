@@ -99,8 +99,7 @@ public class Player implements Actor {
     public void moveUp(int distance) {
         int newY = this.y - distance;
         if (newY < 0) {
-            throw new InvalidPositionException(
-                "Player " + name + " cannot move up to y=" + newY + " — outside the pitch");
+            throw new InvalidPositionException(name + " cannot go outside TOP edge");
         }
         this.y = newY;
     }
@@ -108,8 +107,7 @@ public class Player implements Actor {
     public void moveDown(int distance) {
         int newY = this.y + distance;
         if (newY > Rendering.ScreenSize.height) {
-            throw new InvalidPositionException(
-                "Player " + name + " cannot move down to y=" + newY + " — outside the pitch");
+            throw new InvalidPositionException(name + " cannot go outside BOTTOM edge");
         }
         this.y = newY;
     }
@@ -117,8 +115,7 @@ public class Player implements Actor {
     public void moveLeft(int distance) {
         int newX = this.x - distance;
         if (newX < 0) {
-            throw new InvalidPositionException(
-                "Player " + name + " cannot move left to x=" + newX + " — outside the pitch");
+            throw new InvalidPositionException(name + " cannot go outside LEFT edge");
         }
         this.x = newX;
     }
@@ -126,8 +123,7 @@ public class Player implements Actor {
     public void moveRight(int distance) {
         int newX = this.x + distance;
         if (newX > Rendering.ScreenSize.width) {
-            throw new InvalidPositionException(
-                "Player " + name + " cannot move right to x=" + newX + " — outside the pitch");
+            throw new InvalidPositionException(name + " cannot go outside RIGHT edge");
         }
         this.x = newX;
     }
