@@ -15,18 +15,19 @@ public class TimerPanel extends JPanel {
 
 
     public TimerPanel(Match match) {
-        this(match, 90);
+        this(match, 90, 1.0);
     }
 
-    public TimerPanel(Match match, int startingSeconds) {
+    public TimerPanel(Match match, int startingSeconds, double speed) {
         this.matchMain = match;
+        int delay = 1000 / (int) speed;
         matchTimer = new MatchTimer(startingSeconds);
         timerLabel = new JLabel(matchTimer.getTime(), SwingConstants.CENTER);
         timerLabel.setFont(new Font("Lexend", Font.BOLD, 24));
         timerLabel.setForeground(Color.BLACK);
         add(timerLabel);
 
-        timer = new Timer(1000, e -> {
+        timer = new Timer(delay, e -> {
             matchTimer.tick();
             timerLabel.setText(matchTimer.getTime());
 

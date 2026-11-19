@@ -324,8 +324,9 @@ public class Match {
 
     //PAUSE CAPTURE FOR REPAINT PHASES
     private boolean pauseForNextFrame() {
+        long wait = 16 / (long) speed;
         try {
-            Thread.sleep(16); // Standard 60 fps
+            Thread.sleep(wait);
             return true;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

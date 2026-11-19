@@ -478,7 +478,7 @@ class SimWindow extends MenuState {
 
         menuButton.setBounds(ScreenSize.width / 5 - 125, ScreenSize.height - 385, 80, 40);
 
-        matchTimerPanel = new TimerPanel(match, window.matchTimeCircle.getCurrent());
+        matchTimerPanel = new TimerPanel(match, window.matchTimeCircle.getCurrent(), window.matchSpeedCircle.getCurrent());
         matchTimerPanel.setBounds(ScreenSize.width / 2 - 75, 20, 150, 40);
 
         match.pitch.setBounds(0, 0, ScreenSize.width, ScreenSize.height);
