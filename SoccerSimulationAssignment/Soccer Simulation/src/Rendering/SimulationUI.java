@@ -31,7 +31,7 @@ class UIWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
-        TeamFormation[] possibleFormations = {new FourFourTwoFormation(), new FourThreeThreeFormation(), new ThreeFiveTwoFormation()};
+        TeamFormation[] possibleFormations = {new FourFourTwoFormation(), new FourThreeThreeFormation(), new ThreeFiveTwoFormation(), new FourFiveOneFormation()};
         homeFormationCircle = new CircleList<>(possibleFormations);
         awayFormationCircle = new CircleList<>(possibleFormations);
         formationCircle = homeFormationCircle;
