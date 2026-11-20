@@ -19,6 +19,7 @@ public class SoccerPitch extends JPanel {
     public static final int GOAL_WIDTH = 50;
     public static final int GOAL_HEIGHT = 100;
     public boolean isScoreboardVisible;
+    private boolean isFulltime;
 
     private static final class ActorFrame {
         private final int x;
@@ -36,6 +37,8 @@ public class SoccerPitch extends JPanel {
     private volatile int homeScore = 0;
     private volatile int awayScore = 0;
     private volatile String matchMessage = "";
+    private volatile String statsMessage = "";
+
 
     public SoccerPitch() {
         setPreferredSize(new Dimension(ScreenSize.width, ScreenSize.height));
@@ -65,12 +68,25 @@ public class SoccerPitch extends JPanel {
         repaint();
     }
 
+    public void setStatsMessage(String statsMessage){
+        this.statsMessage = statsMessage == null ? "" : statsMessage;
+        repaint();
+    }
+
     public void setScoreboardVisible(boolean status){
         this.isScoreboardVisible = status;
     }
 
+    public void setFulltime(boolean status){
+        this.isFulltime = status;
+    }
+
     public boolean getScoreboardVisible(){
         return this.isScoreboardVisible;
+    }
+
+    public boolean getFulltime(){
+        return this.isFulltime;
     }
 
     
@@ -80,6 +96,7 @@ public class SoccerPitch extends JPanel {
 
         List<ActorFrame> frame = actorFrames;
         String message = matchMessage;
+        String matchStats = statsMessage;
 
         g.setColor(new Color(50, 150, 50));
         g.fillRect(0, 0, ScreenSize.width, ScreenSize.height);
@@ -144,10 +161,26 @@ public class SoccerPitch extends JPanel {
             int messageX = (ScreenSize.width - messageWidth) / 2;
             int messageY = ScreenSize.height / 2;
 
+            // draw final score and goal pop up
             g.setColor(new Color(0, 0, 0, 170));
-            g.fillRoundRect(messageX - 18, messageY - 34, messageWidth + 36, 48, 16, 16);
+            g.fillRoundRect(messageX - 18, (messageY - 34) - 48, messageWidth + 36, 48, 16, 16);
             g.setColor(Color.WHITE);
-            g.drawString(message, messageX, messageY);
+            g.drawString(message, messageX, messageY - 48);
+
+            // full time stats
+            if(getFulltime()){
+                g.setFont(new Font("Lexend", Font.BOLD, 22));
+
+                g.setColor(new Color(0, 0, 0, 170));
+                g.fillRoundRect(messageX - 18, (messageY - 34) + 5, messageWidth + 36, 48 * 4, 16, 16);
+                g.setColor(Color.WHITE);
+                g.drawString("Match Stats: ", messageX, messageY + 5);
+
+                g.setFont(new Font("Lexend", Font.PLAIN, 18));
+                g.drawString(matchStats, messageX, messageY + 35);
+
+            }
+            
         }
     }
 }

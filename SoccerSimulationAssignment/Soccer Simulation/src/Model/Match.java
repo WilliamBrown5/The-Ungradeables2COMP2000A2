@@ -866,6 +866,7 @@ public class Match {
     public void finishMatch() {
         stopSimulation();
         pitch.setScore(homeScore, awayScore);
+        pitch.setFulltime(true);
         pitch.setMatchMessage("FULL TIME: HOME " + homeScore + " - " + awayScore + " AWAY");
         pitch.setActors(gameActors);
         log.add(new LogEntry(tick, LogEntry.EventType.FULL_TIME, "", "Final score " + homeScore + " - " + awayScore));

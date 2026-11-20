@@ -38,7 +38,7 @@ class UIWindow {
         awayFormationCircle = new CircleList<>(possibleFormations);
         formationCircle = homeFormationCircle;
         sidesCircle = new CircleList<>(new String[] { "Home", "Away" });
-        matchTimeCircle = new CircleList<>(new Integer[] {90, 120, 60, 30});
+        matchTimeCircle = new CircleList<>(new Integer[] {90, 120, 10, 30, 60});
         matchSpeedCircle = new CircleList<>(new Double[] {1.0, 1.5, 2.0, 0.5});
         pitch = new SoccerPitch();
         vertPitch = new VerticalPitch();
@@ -431,10 +431,12 @@ class SimWindow extends MenuState {
         match = new Match();
         window.activeSimulation = this;
         match.setupAndStartSimulation(window.homeFormationCircle.getCurrent(), window.awayFormationCircle.getCurrent());
+        debugWindow = new DebugWindow(match.getLog());
+
         if (window.getDebug()) {
-            debugWindow = new DebugWindow(match.getLog());
             debugWindow.setVisible(true);
         }
+        match.pitch.setStatsMessage(debugWindow.fulltimeStats(match.getLog()));
         match.pitch.setScoreboardVisible(true);
         
 
