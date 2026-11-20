@@ -1,4 +1,5 @@
 ## Instructions for running the simulation
+The main folders where all the files are, is in the SoccerSimulationAssignment folder and then in there in the src folder.
 
 Please run the simulationUI.java file that is the main file that will allow you to run and see the simulation, then when the window appears you can navigate the UI and set certain settings, in order to run the main simulation on the main menu press the 'Start' button, in this next menu you can change the some settings pertaining to the match, once you have changed any settings you can start the simulation by pressing the 'Start' button, now the simulation is running with the configuaration that was set in the menu before, to pause the simulation press the 'Menu' button in the top left corner this will pause the simulation and allow you to resume the simulation or exit from the simulation.
 

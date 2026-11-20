@@ -363,7 +363,7 @@ public class Match {
         pitch.setScore(homeScore, awayScore);
         pitch.setMatchMessage("GOAL! " + scoringTeam);
         if (lastKickWasShot == false)
-            log.add(new LogEntry(tick, LogEntry.EventType.SHOT_ON_GOAL, "", scoringTeam + " shot from a kick"));
+            log.add(new LogEntry(tick, LogEntry.EventType.SHOT_ON_GOAL, scoringTeam, scoringTeam + " shot from a kick"));
         resetForKickoff();
         goalPauseTicks = 60; // about one second at 60 fps
         log.add(new LogEntry(tick, LogEntry.EventType.GOAL, scoringTeam, "GOAL " + homeScore + " - " + awayScore));
