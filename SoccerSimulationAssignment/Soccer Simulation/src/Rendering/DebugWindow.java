@@ -1,6 +1,8 @@
 package Rendering;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.Arrays;
 import java.util.stream.*;
 
@@ -21,6 +23,9 @@ class DebugWindow extends JFrame {
         super("Debug Log");
         this.log = log;
         text.setEditable(false);
+        text.setFont(new Font("Lexend", Font.PLAIN, 13));
+        text.setBackground(new Color(64, 65, 67));
+        text.setForeground(new Color(255, 255, 255));
 
         JPanel filters = new JPanel();
         filters.add(new JLabel("Team: "));
@@ -38,7 +43,7 @@ class DebugWindow extends JFrame {
         refresh.start();
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setSize(ScreenSize.width / 2, ScreenSize.height);
+        setSize((ScreenSize.width / 2) + 30, ScreenSize.height + 40);
 
     }
 
