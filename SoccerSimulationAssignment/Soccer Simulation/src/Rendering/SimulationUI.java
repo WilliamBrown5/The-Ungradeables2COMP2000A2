@@ -431,12 +431,11 @@ class SimWindow extends MenuState {
         match = new Match();
         window.activeSimulation = this;
         match.setupAndStartSimulation(window.homeFormationCircle.getCurrent(), window.awayFormationCircle.getCurrent());
-        debugWindow = new DebugWindow(match.getLog());
 
         if (window.getDebug()) {
+            debugWindow = new DebugWindow(match.getLog());
             debugWindow.setVisible(true);
         }
-        match.pitch.setStatsMessage(debugWindow.fulltimeStats(match.getLog()));
         match.pitch.setScoreboardVisible(true);
         
 

@@ -865,11 +865,67 @@ public class Match {
     // Called by TimerPanel when the match clock reaches 00:00
     public void finishMatch() {
         stopSimulation();
-        pitch.setScore(homeScore, awayScore);
+        log.add(new LogEntry(tick, LogEntry.EventType.FULL_TIME, "", "Final score " + homeScore + " - " + awayScore));
+        pitch.setStatsMessage(fulltimeStats());
         pitch.setFulltime(true);
+        pitch.setScore(homeScore, awayScore);
         pitch.setMatchMessage("FULL TIME: HOME " + homeScore + " - " + awayScore + " AWAY");
         pitch.setActors(gameActors);
-        log.add(new LogEntry(tick, LogEntry.EventType.FULL_TIME, "", "Final score " + homeScore + " - " + awayScore));
+    }
+
+    private String fulltimeStats() {
+        Map<String, Map<LogEntry.EventType, Long>> gameStats = 
+             log.stream()
+                .filter(entry -> entry.getTeam().equals("HOME") || entry.getTeam().equals("AWAY"))
+                .filter(entry -> entry.getType() == LogEntry.EventType.PASS || 
+                                 entry.getType() == LogEntry.EventType.TACKLE || 
+                                 entry.getType() == LogEntry.EventType.SHOT_ON_GOAL || 
+                                 entry.getType() == LogEntry.EventType.GOAL || 
+                                 entry.getType() == LogEntry.EventType.POSSESSION )
+                .collect(Collectors.groupingBy(LogEntry::getTeam, 
+                            Collectors.groupingBy(LogEntry::getType, Collectors.counting())));
+        
+        long homePasses = gameStats.getOrDefault("HOME", Map.of())
+                                   .getOrDefault(LogEntry.EventType.PASS, 0L);
+
+        long awayPasses = gameStats.getOrDefault("AWAY", Map.of())
+                                   .getOrDefault(LogEntry.EventType.PASS, 0L);
+
+        long homeTackles = gameStats.getOrDefault("HOME", Map.of())
+                                    .getOrDefault(LogEntry.EventType.TACKLE, 0L);
+
+        long awayTackles = gameStats.getOrDefault("AWAY", Map.of())
+                                    .getOrDefault(LogEntry.EventType.TACKLE, 0L);
+
+        long homeShots = gameStats.getOrDefault("HOME", Map.of())
+                                  .getOrDefault(LogEntry.EventType.SHOT_ON_GOAL, 0L);
+
+        long awayShots = gameStats.getOrDefault("AWAY", Map.of())
+                                  .getOrDefault(LogEntry.EventType.SHOT_ON_GOAL, 0L);
+        
+        long homeGoals = gameStats.getOrDefault("HOME", Map.of())
+                                  .getOrDefault(LogEntry.EventType.GOAL, 0L);
+
+        long awayGoals = gameStats.getOrDefault("AWAY", Map.of())
+                                  .getOrDefault(LogEntry.EventType.GOAL, 0L);
+
+        double homeAccuracy = homeShots == 0 ? 0 : (homeGoals * 100.0) / homeShots;
+
+        double awayAccuracy = awayShots == 0 ? 0 : (awayGoals * 100.0) / awayShots;
+
+        long homePossessions = gameStats.getOrDefault("HOME", Map.of())
+                                        .getOrDefault(LogEntry.EventType.POSSESSION, 0L);
+
+        long awayPossessions = gameStats.getOrDefault("AWAY", Map.of())
+                                        .getOrDefault(LogEntry.EventType.POSSESSION, 0L);
+        
+
+        return "(Event: Home - Away)" + "\n" +
+               "Passes: " + homePasses + " - " + awayPasses + "\n" + 
+               "Tackles: " + homeTackles + " - " + awayTackles + "\n" +
+               "Shots On Goal: " + homeShots + " - " + awayShots + "\n" +
+               "Accuracy: " + homeAccuracy + " - " + awayAccuracy + "\n" +
+               "Possessions: " + homePossessions + " - " + awayPossessions + "\n";
     }
 
 

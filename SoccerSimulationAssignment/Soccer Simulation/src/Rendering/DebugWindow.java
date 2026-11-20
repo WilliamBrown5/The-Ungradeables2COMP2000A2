@@ -16,7 +16,7 @@ class DebugWindow extends JFrame {
         text.setEditable(false);
         add(new JScrollPane(text));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        displayTeamOutput(text, log);
+        displayRawOutput(text, log);
         
         setSize(ScreenSize.width / 2, ScreenSize.height);
     }
@@ -55,12 +55,7 @@ class DebugWindow extends JFrame {
         refresh.start();
     }
 
-    public String fulltimeStats(MatchLog<LogEntry> inputLog){
-        String stats = inputLog.stream()
-                               .filter(entry -> entry.getTeam().equals("HOME") && entry.getTeam().equals("AWAY"))
-                               .collect(Collectors.groupingBy(LogEntry::getTeam, Collectors.counting())).toString();
-        return stats;
-    }
+    
 
     
 

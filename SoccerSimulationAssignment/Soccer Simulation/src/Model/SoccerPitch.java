@@ -169,15 +169,21 @@ public class SoccerPitch extends JPanel {
 
             // full time stats
             if(getFulltime()){
-                g.setFont(new Font("Lexend", Font.BOLD, 22));
+                String[] lines = matchStats.split("\n");
+                int lineHeight = 25;
+                int boxHeight = 54 + lines.length * lineHeight; 
 
                 g.setColor(new Color(0, 0, 0, 170));
-                g.fillRoundRect(messageX - 18, (messageY - 34) + 5, messageWidth + 36, 48 * 4, 16, 16);
+                g.fillRoundRect(messageX - 18, messageY - 29, messageWidth + 36, boxHeight, 16, 16);
+
+                g.setFont(new Font("Lexend", Font.BOLD, 22));
                 g.setColor(Color.WHITE);
                 g.drawString("Match Stats: ", messageX, messageY + 5);
 
                 g.setFont(new Font("Lexend", Font.PLAIN, 18));
-                g.drawString(matchStats, messageX, messageY + 35);
+                for (int i = 0; i < lines.length; i++) {
+                    g.drawString(lines[i], messageX, messageY + 35 + i * lineHeight);
+                }
 
             }
             
