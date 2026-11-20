@@ -62,6 +62,7 @@ public class Match {
     private final MatchLog<LogEntry> log = new MatchLog<>();
     private int tick;
     private String lastError = "";
+    private boolean lastKickWasShot = false;
 
     public Match() {
         this.pitch = new SoccerPitch();
@@ -274,6 +275,7 @@ public class Match {
                 Player collector = findPlayerTouchingBall(pickupRadius);
 
                 if (collector != null) {
+                    lastKickWasShot = false;
                     ball.setOwner(collector);
                     possessionTicks = 0;
                     ticksUntilPass = 40 + random.nextInt(35);
@@ -360,6 +362,8 @@ public class Match {
 
         pitch.setScore(homeScore, awayScore);
         pitch.setMatchMessage("GOAL! " + scoringTeam);
+        if (lastKickWasShot == false)
+            log.add(new LogEntry(tick, LogEntry.EventType.SHOT_ON_GOAL, "", scoringTeam + " shot from a kick"));
         resetForKickoff();
         goalPauseTicks = 60; // about one second at 60 fps
         log.add(new LogEntry(tick, LogEntry.EventType.GOAL, scoringTeam, "GOAL " + homeScore + " - " + awayScore));
@@ -399,6 +403,7 @@ public class Match {
         contestedTicks = 0;
         clearanceCooldown = 0;
         stunnedPlayers.clear();
+        lastKickWasShot = false;
     }
 
     private void updateStunnedPlayers() {
@@ -595,6 +600,7 @@ public class Match {
         int goalX = isHome(player) ? ScreenSize.width : 0;
         int goalY = ScreenSize.height / 2 + random.nextInt(61) - 30;
         kickTowards(goalX, goalY, 12);
+        lastKickWasShot = true;
         log.add(new LogEntry(tick, LogEntry.EventType.SHOT_ON_GOAL, team(player), player.getName() + " shoots"));
     }
 
@@ -609,6 +615,7 @@ public class Match {
     }
 
     private void kickTowards(int targetX, int targetY, int speed) {
+        lastKickWasShot = false;
         int dx = targetX - ball.getX();
         int dy = targetY - ball.getY();
         double distance = Math.max(1, distanceBetween(ball.getX(), ball.getY(), targetX, targetY));
@@ -924,7 +931,7 @@ public class Match {
                "Passes: " + homePasses + " - " + awayPasses + "\n" + 
                "Tackles: " + homeTackles + " - " + awayTackles + "\n" +
                "Shots On Goal: " + homeShots + " - " + awayShots + "\n" +
-               "Accuracy: " + homeAccuracy + " - " + awayAccuracy + "\n" +
+               "Accuracy: " + String.format("%.0f%%", homeAccuracy) + " - " + String.format("%.0f%%", awayAccuracy) + "\n" +
                "Possessions: " + homePossessions + " - " + awayPossessions + "\n";
     }
 
