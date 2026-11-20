@@ -20,7 +20,7 @@ public class TimerPanel extends JPanel {
 
     public TimerPanel(Match match, int startingSeconds, double speed) {
         this.matchMain = match;
-        int delay = 1000 / (int) speed;
+        int delay = (int) (1000 / speed);
         matchTimer = new MatchTimer(startingSeconds);
         timerLabel = new JLabel(matchTimer.getTime(), SwingConstants.CENTER);
         timerLabel.setFont(new Font("Lexend", Font.BOLD, 24));
