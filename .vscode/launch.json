@@ -9,7 +9,6 @@
             "name": "SimulationUI",
             "request": "launch",
             "mainClass": "Rendering.SimulationUI",
-            "projectName": "The-Ungradeables2COMP2000A2_a48fd015"
         }
     ]
 }
