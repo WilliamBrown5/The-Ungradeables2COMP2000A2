@@ -1,6 +1,8 @@
 package Rendering;
 
-import java.util.stream.Collectors;
+import java.awt.BorderLayout;
+import java.util.Arrays;
+import java.util.stream.*;
 
 import javax.swing.*;
 
@@ -9,55 +11,58 @@ import Model.*;
 
 class DebugWindow extends JFrame {
     private javax.swing.Timer refresh;
+    private final JTextArea text = new JTextArea();
+    private final JComboBox<String> teamFilterBox = new JComboBox<>(new String[] {"ALL", "HOME", "AWAY"});
+    private final JComboBox<String> typeFilterBox = new JComboBox<>(eventTypeOptions());
+    private final MatchLog<LogEntry> log;
+
 
     DebugWindow(MatchLog<LogEntry> log) {
         super("Debug Log");
-        JTextArea text = new JTextArea();
+        this.log = log;
         text.setEditable(false);
-        add(new JScrollPane(text));
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        displayRawOutput(text, log);
+
+        JPanel filters = new JPanel();
+        filters.add(new JLabel("Team: "));
+        filters.add(teamFilterBox);
+        filters.add(new JLabel("Type: "));
+        filters.add(typeFilterBox);
+
+        add(filters, BorderLayout.NORTH);
+        add(new JScrollPane(text), BorderLayout.CENTER);
         
+        teamFilterBox.addActionListener(e -> updateText());
+        typeFilterBox.addActionListener(e -> updateText());
+
+        refresh = new javax.swing.Timer(500, e -> updateText());
+        refresh.start();
+
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(ScreenSize.width / 2, ScreenSize.height);
+
     }
 
-    public void displayRawOutput(JTextArea textArea, MatchLog<LogEntry> inputLog){
-        refresh = new javax.swing.Timer(500, e -> {
-            String output = inputLog.stream()
-                                    .map(LogEntry::toString)
-                                    .collect(Collectors.joining("\n"));
-            if (!output.equals(textArea.getText()))
-                textArea.setText(output);
-        });
-        refresh.start();
+    private void updateText(){
+        String team = (String) teamFilterBox.getSelectedItem();
+        String type = (String) typeFilterBox.getSelectedItem();
+
+        String output = log.stream()
+                           .filter((team.equals("ALL")) ? entry -> true : entry -> entry.getTeam().equals(team))
+                           .filter((type.equals("ALL")) ? entry -> true : entry -> entry.getType().name().equals(type))
+                           .map(LogEntry::toString)
+                           .collect(Collectors.joining("\n"));
+
+        if (!output.equals(text.getText()))
+            text.setText(output);
     }
 
-    public void displayTeamOutput(JTextArea textArea, MatchLog<LogEntry> inputLog){
-        refresh = new javax.swing.Timer(500, e -> {
-            String output = inputLog.stream()
-                                    .filter(entry -> entry.getTeam().equals("HOME"))
-                                    .map(LogEntry::toString)
-                                    .collect(Collectors.joining("\n"));
-            if (!output.equals(textArea.getText()))
-                textArea.setText(output);
-        });
-        refresh.start();
+    private static String[] eventTypeOptions() {
+        return Stream.concat(Stream.of("ALL"),
+                             Arrays.stream(LogEntry.EventType.values())
+                                   .map(Enum::name))
+                     .toArray(String[]::new);
     }
 
-    public void displayTypeOutput(JTextArea textArea, MatchLog<LogEntry> inputLog){
-        refresh = new javax.swing.Timer(500, e -> {
-            String output = inputLog.stream()
-                                    .map(LogEntry::toString)
-                                    .collect(Collectors.joining("\n"));
-            if (!output.equals(textArea.getText()))
-                textArea.setText(output);
-        });
-        refresh.start();
-    }
-
-    
-
-    
 
     @Override
     public void dispose() {
